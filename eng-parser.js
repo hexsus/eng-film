@@ -6,7 +6,13 @@ const puppeteer = require('puppeteer');
     await page.goto('https://multiplex.ua/cinema/dnipro/dafi_imax');
     const resultsSelector = '.info .title';
     await page.waitForSelector(resultsSelector);
-
+    const dates = '.date';
+    const urls = await page.evaluate((dates) => {
+        return Array.from(document.querySelectorAll(dates)).map(date => {
+            return date.href;
+        });
+    }, dates)
+    
     const links = await page.evaluate(resultsSelector => {
         const titles = Array.from(document.querySelectorAll(resultsSelector));
         return titles.map(anchor => {
@@ -14,6 +20,7 @@ const puppeteer = require('puppeteer');
             return `${title} - ${anchor.href}`;
         });
     }, resultsSelector);
+    console.log(urls);
     
     console.log(links);
 
